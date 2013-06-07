@@ -1,0 +1,116 @@
+<!doctype html>
+ 
+<html lang="en">
+<head>
+  <title>Convert Sencha Animator to Gloo</title>
+</head>
+<body>
+
+<!-- 83k jQuery 2.0.0 --><script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<h2>Convert Sencha Animator index.html to Gloo Element Code</h2>
+
+<form action="convertSenchaAnimatorToGlooCode.php" method="post" enctype="multipart/form-data">
+
+<input type="hidden" name="MAX_FILE_SIZE" value="300000"/>
+<label for="file">Sencha Animator index.html :</label>
+<input type="file" name="file" id="file">
+
+<p>IMPORTANT: FILE UPLOAD SECURITY RESTRICTION (imposed by hosting service)<br>
+In index.html, replace all occurences of 'function ' with 'function!' or the upload will time out.
+</p>
+
+<label for="appletSubdir">Select Applet :</label>
+<select name="appletSubdir" id="appletSubdir">
+  <option value="appletLoveIsJourney">Love Is Journey</option>
+  <option value="appletTopTenNeeds">Top Ten Needs</option>
+  <option value="appletFillErUp">Fill Er Up</option>
+</select><div id="assetReplacementPreview">...</div>
+<input type="hidden" name="assetPathReplacement" id="assetPathReplacement">
+
+<br>
+
+Stage Margin (pixels) : <input type="text" name="saStageMargin" value="200"> (the stage margin area is not guaranteed to be visible)
+
+<br>
+
+<label for="saScaleMode">Scaling Mode :</label>
+<select name="saScaleMode" id="saScaleMode">
+  <option value="ASPECT_FIT">Aspect Fit</option>
+  <option value="STRETCH_FIT">Stretch Fit</option>
+  <option value="ASPECT_WIDTH" selected>Aspect Width</option>
+  <option value="ASPECT_WIDTH_NO_MARGIN">Aspect Width, No Margin</option>
+  <option value="ASPECT_WIDTH_BOTTOM_MARGIN">Aspect Width, Bottom Margin</option>
+</select> (see descriptions)
+
+<br><br>
+
+<input type="submit" name="submitButton" value="Convert & Download">
+or
+<input type="submit" name="submitButton" value="Convert & Display">
+
+</form>
+
+<br>
+<hr>
+
+<p>Scaling Mode Descriptions</p>
+<ul>
+  <li>Aspect Fit - aspect fit viewport, margin visible in one dimension, no scrolling
+  <li>Stretch Fit - stretched to fit viewport, margin visible, no scrolling
+  <li>Aspect Width - width fits viewport, margins visible, view may scroll up/down
+  <li>Aspect Width, No Margin - width fits viewport, no margins visible, view may scroll up/down
+  <li>Aspect Width, Bottom Margin - width fits viewport, only bottom margin visible, view may scroll up/down
+</ul>
+
+<p>What gets done in conversion:</p>
+<ul>
+  <li>HTML header, footer, body tags are stripped</li>
+  <li>asset relative paths are replaced</li>
+  <li>Auto scaling JavaScript code is inserted</li>
+  <li>Auto asset selection JavaScript code is inserted</li>
+</ul>
+
+<p>A Sencha Animator asset bundle must be uploaded to Gloo separately.  See gloo_assets_202/Readme.txt in Dropbox.</p>
+
+<script>
+
+  // jQuery ready function
+  $(function() {
+
+    // asset path prefix and suffix
+    var pthpfx='gloo_assets_202/';
+    var pthsfx='/scaledAssets/scaleDir/'; // note: 'scaleDir' will be replaced by JS at run time
+
+    // init
+    updateAssetReplacementElements(pthpfx,pthsfx);
+
+    // setup event handler
+    $("#appletSubdir").change(function(e) {
+
+      // applet subdir value has changed
+      
+      // get new value
+      var newval = $(this).val();
+      
+      // show new preview value
+      updateAssetReplacementElements(pthpfx,pthsfx);
+
+    });
+
+  });
+
+  function updateAssetReplacementElements(pfx,sfx)
+  {
+    // create new path
+    var newpth = pfx + $("#appletSubdir").val() + sfx;
+
+    // update preview and hidden input value
+    $("#assetReplacementPreview").html("&nbsp;&nbsp;&nbsp;&nbsp;'assets/' will be replaced with '" + newpth + "'");
+    $("#assetPathReplacement").val(newpth);
+  }
+
+</script>
+
+</body>
+</html>
