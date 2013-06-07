@@ -1,4 +1,4 @@
-Gloo
-====
+Sencha Animator to Gloo Converter
+=================================
 
-Code related to the Gloo project.
+Reads and converts a Sencha Animator v1.3 index.html file to code that can be copy/pasted into a Gloo element.  See Upload.html for further instructions.
