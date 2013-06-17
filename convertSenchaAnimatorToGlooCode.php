@@ -44,7 +44,7 @@ $outfildta = stripHtmlWrapper($inpfildta);
 $outfildta = replaceAssetPaths($outfildta, $_POST['assetPathReplacement']);
 
 // phase 3: insert JS code
-$outfildta = insertJavascriptCode($outfildta, $_POST['saScaleMode'], $_POST['saStageMargin']);
+$outfildta = insertJavascriptCode($outfildta, $_POST['saBaseUrl'], $_POST['saScaleMode'], $_POST['saStageMargin']);
 
 // phase 4: modify Sencha Animator JS
 $outfildta = modifySenchaAnimatorCode($outfildta);
@@ -170,14 +170,20 @@ function replaceAssetPaths($dta, $newpth)
 
 /**
  * Third pass: insert jQuery and custom scaling and asset selection JS code
+ *
+ * dta      file data string
+ * bseurl   base URL for assets
+ * sclmod   scale mode
+ * stgmgn   stage margin
+ *
  * Returns: the modified string
  */
-function insertJavascriptCode($dta, $sclmod, $stgmgn)
+function insertJavascriptCode($dta, $bseurl, $sclmod, $stgmgn)
 {
   // append <script> tags
   return $dta . "\n\n" .
-    '<script src="gloo_assets_202/shared/js/jquery-2.0.0.min.js"></script>' . "\n" .
-    '<script src="gloo_assets_202/shared/js/saUtility.js"></script>' . "\n" .
+    '<script src="' . $bseurl . 'shared/js/jquery-2.0.0.min.js"></script>' . "\n" .
+    '<script src="' . $bseurl . 'shared/js/saUtility.js"></script>' . "\n" .
     '<script type="text/javascript">' . "\n" .
     '  $(function() { saUtility.createObscuringDiv(); saUtility.autoScale(saUtility.SCALE_MODE.' . $sclmod . ',' . $stgmgn . '); });' . "\n" .
     '  $(window).load(function(){ saUtility.fadeOutObscuringDiv(); });' . "\n" .
