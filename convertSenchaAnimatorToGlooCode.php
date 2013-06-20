@@ -5,9 +5,11 @@
  *
  * Revision History
  * 1.0  Jun 07 2013  LLL  added code to make Sencha Animator controller object global
+ * 1.1  Jun 20 2013  LLL  added support for Sencha Animator 1.5
+ *                        removed 'function!' replacement security work-around
  */
 $sa2gcDescription='Sencha Animator to Gloo Converter';
-$sa2gcVersion='1.0';
+$sa2gcVersion='1.1';
 
 // allowed file extensions
 $allowedExts = array("html");
@@ -32,10 +34,6 @@ $inpfildta = file_get_contents($_FILES["file"]["tmp_name"]);
 
 // validate Sencha Animator version
 if(!validateVersion($inpfildta)) { exit(1); }
-
-// SECURITY WORK-AROUND: search and replace: "function!" -> "function "
-// PROBLEM: the lowelllist.com server (register.com) has an upload file content restriction!
-$inpfildta = str_replace('function!','function ',$inpfildta);
 
 // phase 1: strip HTML wrapper
 $outfildta = stripHtmlWrapper($inpfildta);
@@ -108,7 +106,7 @@ function echoIncomingFileDetails()
  */
 function validateVersion($dta)
 {
-  // search for tokens
+  // search for version/build tokens
   $vertkn = '<!-- Sencha Animator Version: ';       // version token
   $veridx = strpos($dta,$vertkn);
   $bldidx = strpos($dta,'Build: ');                 // build token
@@ -122,16 +120,13 @@ function validateVersion($dta)
   // isolate version string
   $stridx = $veridx + strlen($vertkn);
   $verstr = trim( substr($dta,$stridx,$bldidx-$stridx) );
-  
-  // check version string
-  if($verstr!='1.3')
-  {
-    echoError('Invalid Sencha Animator version [' . $verstr . ']');
-    return FALSE;
-  }
 
-  // success
-  return TRUE;
+  // check version string
+  if($verstr=='1.3' || $verstr=='1.5') { return TRUE; /* version OK */ }
+
+  // invalid
+  echoError('Invalid Sencha Animator version [' . $verstr . ']');
+  return FALSE;
 }
 
 /**
@@ -145,7 +140,7 @@ function stripHtmlWrapper($dta)
   if($begpos===FALSE) { echoErrorAndExit('script tag not found'); }
   $dta=substr($dta,$begpos);
 
-  // 2) delete middle snippet: </head><body style="margin:0;">
+  // 2) delete middle snippet: </head><body ... up until <div id=
   $begpos=strpos($dta,'</head>');
   $endpos=strpos($dta,'<div id=');
   if($begpos===FALSE || $endpos===FALSE) { echoErrorAndExit('head/body tags not found'); }
@@ -197,13 +192,12 @@ function insertJavascriptCode($dta, $bseurl, $sclmod, $stgmgn)
 function modifySenchaAnimatorCode($dta)
 {
   // make Sencha Animator controller object global
-  $schstr="controller.setConfig(configData);\n"; // search string
+  $schstr="controller.setConfig(configData);"; // search string
   $begpos=strpos($dta,$schstr);
   if($begpos===FALSE) { echoErrorAndExit('controller config line not found'); }
   $begpos+=strlen($schstr);
   // insert new line
-  $dta=substr($dta,0,$begpos) . "       window.saController=controller; // make the controller global\n" . substr($dta,$begpos);
-
+  $dta=substr($dta,0,$begpos) . "window.saController=controller;/* make the controller global */" . substr($dta,$begpos);
   return $dta;
 }
 

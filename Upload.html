@@ -16,9 +16,7 @@
 <label for="file">Sencha Animator index.html :</label>
 <input type="file" name="file" id="file">
 
-<p>IMPORTANT: FILE UPLOAD SECURITY RESTRICTION (imposed by hosting service)<br>
-In index.html, replace all occurences of 'function ' with 'function!' or the upload will time out.
-</p>
+<br><br>
 
 <label for="saBaseUrl">Base URL for Asset Bundles:</label>
 <input type="text" id="saBaseUrl" name="saBaseUrl" value="gloo_assets_202/"> (note: 202 is Flying Rhino's Gloo organization ID)
@@ -57,7 +55,7 @@ or
 <br>
 <hr>
 
-<p>Supported Sencha Animator versions: 1.3</p>
+<p>Supported Sencha Animator versions: 1.3, 1.5</p>
 
 <p>Scaling Mode Descriptions</p>
 <ul>
@@ -71,9 +69,10 @@ or
 <p>What gets done in conversion:</p>
 <ul>
   <li>HTML header, footer, body tags are stripped</li>
-  <li>asset relative paths are replaced</li>
+  <li>Asset relative paths are replaced</li>
   <li>Auto scaling JavaScript code is inserted</li>
   <li>Auto asset selection JavaScript code is inserted</li>
+  <li>Sencha Animator controller object is made global as <pre>window.saController</pre></li>
 </ul>
 
 <p>A Sencha Animator asset bundle must be uploaded to Gloo separately.
