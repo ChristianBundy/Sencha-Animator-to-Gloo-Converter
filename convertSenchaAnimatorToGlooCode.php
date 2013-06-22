@@ -180,7 +180,7 @@ function insertJavascriptCode($dta, $bseurl, $sclmod, $stgmgn)
     '<script src="' . $bseurl . 'shared/js/jquery-2.0.0.min.js"></script>' . "\n" .
     '<script src="' . $bseurl . 'shared/js/saUtility.js"></script>' . "\n" .
     '<script type="text/javascript">' . "\n" .
-    '  $(function(){ saUtility.setConfig({ scaleMode: saUtility.SCALE_MODE.' . $sclmod . ', stageMargin: ' . $stgmgn . ' }); });' . "\n" .
+    '  $(function(){ saUtility.setConfig({ scaleMode: saUtility.SCALE_MODE.' . $sclmod . ', stageMargin: ' . $stgmgn . ', saVersion: ' . $_POST['saVersion'] . '}); });' . "\n" .
     '  $(window).load(function(){ saUtility.revealAnimation(); });' . "\n" .
     '</script>' . "\n";
 }
